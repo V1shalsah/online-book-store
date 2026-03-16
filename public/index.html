@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Book Store</title>
+</head>
+
+<body>
+
+<h1>Book Store</h1>
+
+<input type="text" id="search" placeholder="Search books">
+
+<button onclick="searchBooks()">Search</button>
+
+<div id="books"></div>
+
+<script>
+
+async function loadBooks(){
+
+let res = await fetch("/api/books");
+let books = await res.json();
+
+let html="";
+
+books.forEach(book=>{
+html+=`
+<div>
+<h3>${book.title}</h3>
+<p>${book.author}</p>
+<p>${book.price}</p>
+<button>Add to Cart</button>
+</div>
+`;
+});
+
+document.getElementById("books").innerHTML=html;
+
+}
+
+loadBooks();
+
+</script>
+
+</body>
+</html>
