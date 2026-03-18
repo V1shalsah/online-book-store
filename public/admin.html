@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Dashboard</title>
+
+<style>
+body{
+font-family: Arial;
+margin:40px;
+}
+
+input{
+display:block;
+margin:10px 0;
+padding:8px;
+width:300px;
+}
+
+button{
+padding:10px;
+background:#2ecc71;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Admin Dashboard</h1>
+
+<h2>Add Book</h2>
+
+<input id="title" placeholder="Book Title">
+<input id="author" placeholder="Author">
+<input id="category" placeholder="Category">
+<input id="price" placeholder="Price">
+
+<button onclick="addBook()">Add Book</button>
+
+<p id="msg"></p>
+
+<script>
+
+async function addBook(){
+
+const book={
+title:document.getElementById("title").value,
+author:document.getElementById("author").value,
+category:document.getElementById("category").value,
+price:document.getElementById("price").value
+}
+
+const res = await fetch("/api/admin/add-book",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(book)
+})
+
+const data = await res.json()
+
+document.getElementById("msg").innerText=data.message
+
+}
+
+</script>
+
+</body>
+</html>
