@@ -12,6 +12,10 @@
 
 <button onclick="searchBooks()">Search</button>
 
+<button onclick="addCart('${book._id}','${book.title}','${book.price}')">
+Add to Cart
+</button>
+
 <div id="books"></div>
 
 <script>
@@ -39,6 +43,27 @@ document.getElementById("books").innerHTML=html;
 }
 
 loadBooks();
+
+async function addCart(id,title,price){
+
+const cart={
+userId:"1",
+bookId:id,
+title:title,
+price:price
+}
+
+await fetch("/api/cart/add",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(cart)
+})
+
+alert("Book added to cart")
+
+}
 
 </script>
 

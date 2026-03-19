@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
-userId:String,
-books:Array,
-amount:Number,
-status:{
-type:String,
-default:"pending"
-}
-},{timestamps:true});
+    userId:String,
+    items:Array,
+    total:Number,
+    date:{
+        type:Date,
+        default:Date.now
+    }
+});
 
 module.exports = mongoose.model("Order",OrderSchema);

@@ -11,6 +11,8 @@ const app = express();
 app.use(express.json());
 app.use(express.static("public"));
 app.use("/api/admin", require("./routes/adminRoutes"));
+app.use("/api/cart", require("./routes/cartRoutes"));
+app.use("/api/orders", require("./routes/orderRoutes"));
 mongoose.connect(process.env.MONGO_URL)
 .then(()=>console.log("MongoDB Connected"))
 .catch(err=>console.log(err));

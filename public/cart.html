@@ -1,0 +1,55 @@
+<h1>Your Cart</h1>
+
+<div id="cart"></div>
+
+<button onclick="checkout()">Checkout</button>
+
+<script>
+
+async function loadCart(){
+
+let res = await fetch("/api/cart/1");
+let data = await res.json();
+
+let html="";
+
+data.forEach(item=>{
+
+html+=`
+<div>
+<h3>${item.title}</h3>
+<p>${item.price}</p>
+<button onclick="removeItem('${item._id}')">Remove</button>
+</div>
+`
+
+})
+
+document.getElementById("cart").innerHTML=html;
+
+}
+
+loadCart();
+
+
+async function removeItem(id){
+
+await fetch("/api/cart/remove/"+id,{
+method:"DELETE"
+})
+
+loadCart()
+
+}
+async function checkout(){
+
+await fetch("/api/orders/checkout/1",{
+method:"POST"
+})
+
+alert("Order placed successfully")
+
+loadCart()
+
+}
+</script>

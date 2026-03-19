@@ -1,26 +1,41 @@
 const router = require("express").Router();
 const Order = require("../models/Order");
+const Cart = require(".../models/Cart");
 
-router.post("/",async(req,res)=>{
 
-const order = new Order(req.body);
+// checkout
+router.post("/checkout/:userId", async(req,res)=>{
 
-try{
-const savedOrder = await order.save();
-res.json(savedOrder);
-}catch(err){
-res.status(500).json(err);
-}
+const cartItems = await Cart.find({userId:req.params.userId})
 
-});
+let total=0
 
-router.get("/",async(req,res)=>{
-try{
-const orders = await Order.find();
-res.json(orders);
-}catch(err){
-res.status(500).json(err);
-}
-});
+cartItems.forEach(item=>{
+total+=item.price
+})
+
+const order = new Order({
+userId:req.params.userId,
+items:cartItems,
+total:total
+})
+
+await order.save()
+
+await Cart.deleteMany({userId:req.params.userId})
+
+res.json({message:"Order placed successfully"})
+
+})
+
+
+// view orders
+router.get("/:userId", async(req,res)=>{
+
+const orders = await Order.find({userId:req.params.userId})
+
+res.json(orders)
+
+})
 
 module.exports = router;
