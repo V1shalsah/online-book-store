@@ -1,24 +1,12 @@
-const router = require("express").Router();
-const Book = require("../models/Book");
+router.get("/search/:key", async (req, res) => {
 
-router.post("/",async(req,res)=>{
-const newBook = new Book(req.body);
+    const books = await Book.find({
+        $or: [
+            { title: { $regex: req.params.key, $options: "i" } },
+            { author: { $regex: req.params.key, $options: "i" } },
+            { category: { $regex: req.params.key, $options: "i" } }
+        ]
+    });
 
-try{
-const savedBook = await newBook.save();
-res.json(savedBook);
-}catch(err){
-res.status(500).json(err);
-}
+    res.json(books);
 });
-
-router.get("/",async(req,res)=>{
-try{
-const books = await Book.find();
-res.json(books);
-}catch(err){
-res.status(500).json(err);
-}
-});
-
-module.exports = router;
