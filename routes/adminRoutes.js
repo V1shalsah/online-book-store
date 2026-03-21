@@ -32,4 +32,25 @@ router.put("/update-book/:id", async (req, res) => {
   }
 });
 
+
+const Book = require("../models/Book");
+const upload = require("../middleware/upload");
+
+router.post("/add-book", upload.single("image"), async (req, res) => {
+
+  const book = new Book({
+    title: req.body.title,
+    author: req.body.author,
+    category: req.body.category,
+    price: req.body.price,
+    image: req.file.filename
+  });
+
+  await book.save();
+
+  res.json({ message: "Book added with image" });
+
+});
+
+
 module.exports = router;
