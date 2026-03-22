@@ -1,7 +1,12 @@
 const router = require("express").Router();
 const Order = require("../models/Order");
-const Cart = require(".../models/Cart");
+const Cart = require("../models/Cart");
 
+
+router.get("/:userId", async (req, res) => {
+  const orders = await Order.find({ userId: req.params.userId });
+  res.json(orders);
+});
 
 // checkout
 router.post("/checkout/:userId", async(req,res)=>{

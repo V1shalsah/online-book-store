@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Order History</title>
+
+<style>
+body{
+font-family:Arial;
+margin:40px;
+}
+
+.order{
+border:1px solid #ccc;
+padding:15px;
+margin-bottom:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Your Orders</h1>
+
+<div id="orders"></div>
+
+<script>
+
+async function loadOrders(){
+
+let userId = "1"
+
+let res = await fetch("/api/orders/" + userId)
+
+let orders = await res.json()
+
+let html=""
+
+orders.forEach(order=>{
+
+html += `
+<div class="order">
+<h3>Order ID: ${order._id}</h3>
+<p>Total: ₹${order.total}</p>
+<p>Date: ${new Date(order.date).toLocaleString()}</p>
+</div>
+`
+
+})
+
+document.getElementById("orders").innerHTML = html
+
+}
+
+loadOrders()
+
+</script>
+
+</body>
+</html>
