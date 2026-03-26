@@ -1,46 +1,46 @@
-const router = require("express").Router();
+const express = require("express");
+const router = express.Router();
 const Order = require("../models/Order");
 const Cart = require("../models/Cart");
 
+// Checkout
+router.post("/checkout/:userId", async (req, res) => {
 
-router.get("/:userId", async (req, res) => {
-  const orders = await Order.find({ userId: req.params.userId });
-  res.json(orders);
+  try {
+
+    const cartItems = await Cart.find({ userId: req.params.userId });
+
+    if (cartItems.length === 0) {
+      return res.json({ message: "Cart is empty" });
+    }
+
+    let total = 0;
+
+    cartItems.forEach(item => {
+      total += item.price;
+    });
+
+    const order = new Order({
+      userId: req.params.userId,
+      items: cartItems,
+      total: total,
+      date: new Date()
+    });
+
+    await order.save();
+
+    // clear cart
+    await Cart.deleteMany({ userId: req.params.userId });
+
+    res.json({
+      message: "Order placed successfully",
+      order: order
+    });
+
+  } catch (error) {
+    res.status(500).json(error);
+  }
+
 });
-
-// checkout
-router.post("/checkout/:userId", async(req,res)=>{
-
-const cartItems = await Cart.find({userId:req.params.userId})
-
-let total=0
-
-cartItems.forEach(item=>{
-total+=item.price
-})
-
-const order = new Order({
-userId:req.params.userId,
-items:cartItems,
-total:total
-})
-
-await order.save()
-
-await Cart.deleteMany({userId:req.params.userId})
-
-res.json({message:"Order placed successfully"})
-
-})
-
-
-// view orders
-router.get("/:userId", async(req,res)=>{
-
-const orders = await Order.find({userId:req.params.userId})
-
-res.json(orders)
-
-})
 
 module.exports = router;
