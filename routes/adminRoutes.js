@@ -1,32 +1,34 @@
 const express = require("express");
 const router = express.Router();
+
 const Book = require("../models/Book");
-const upload = require("../middleware/upload");
+const Order = require("../models/Order");
+const User = require("../models/User");
 
-// add book
-router.post("/add-book", upload.single("image"), async (req, res) => {
+// Admin Dashboard
+router.get("/dashboard", async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const totalBooks = await Book.countDocuments();
+    const totalOrders = await Order.countDocuments();
 
-  const book = new Book({
-    title: req.body.title,
-    author: req.body.author,
-    category: req.body.category,
-    price: req.body.price,
-    image: req.file.filename
-  });
+    const orders = await Order.find();
 
-  await book.save();
+    let revenue = 0;
+    orders.forEach(order => {
+      revenue += order.total;
+    });
 
-  res.json({ message: "Book added successfully" });
+    res.json({
+      users: totalUsers,
+      books: totalBooks,
+      orders: totalOrders,
+      revenue: revenue
+    });
+
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
-
-
-// delete book
-router.delete("/delete-book/:id", async (req, res) => {
-
-  await Book.findByIdAndDelete(req.params.id);
-
-  res.json({ message: "Book deleted" });
-});
-
 
 module.exports = router;
